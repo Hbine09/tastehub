@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Register - CloudBite{% endblock %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 3rem auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <h1 style="color: #2c3e50; text-align: center; margin-bottom: 2rem;">Create Account</h1>
+    
+    <form method="POST" action="{{ url_for('auth.register') }}">
+        <div style="margin-bottom: 1.5rem;">
+            <label for="name" style="display: block; margin-bottom: 0.5rem; color: #2c3e50; font-weight: 500;">Full Name</label>
+            <input type="text" id="name" name="name" required 
+                   style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+        </div>
+        
+        <div style="margin-bottom: 1.5rem;">
+            <label for="email" style="display: block; margin-bottom: 0.5rem; color: #2c3e50; font-weight: 500;">Email</label>
+            <input type="email" id="email" name="email" required 
+                   style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+        </div>
+        
+        <div style="margin-bottom: 1.5rem;">
+            <label for="password" style="display: block; margin-bottom: 0.5rem; color: #2c3e50; font-weight: 500;">Password</label>
+            <input type="password" id="password" name="password" required minlength="6"
+                   style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;">
+            <small style="color: #7f8c8d;">Minimum 6 characters</small>
+        </div>
+        
+        <button type="submit" class="btn" style="width: 100%; padding: 12px; font-size: 1rem;">
+            Register
+        </button>
+    </form>
+    
+    <p style="text-align: center; margin-top: 1.5rem; color: #7f8c8d;">
+        Already have an account? <a href="{{ url_for('auth.login') }}" style="color: #e74c3c; text-decoration: none;">Login here</a>
+    </p>
+</div>
+{% endblock %}

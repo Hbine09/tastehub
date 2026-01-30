@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Menu - CloudBite{% endblock %}
+
+{% block content %}
+<h1 style="color: #2c3e50; margin-bottom: 2rem; text-align: center;">Our Menu</h1>
+
+{% if categories %}
+    {% for category, items in categories.items() %}
+        <div style="background: white; padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+            <h2 style="color: #e74c3c; margin-bottom: 1.5rem; border-bottom: 2px solid #e74c3c; padding-bottom: 0.5rem;">
+                {{ category }}
+            </h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+                {% for item in items %}
+                    <div style="border: 1px solid #ddd; padding: 1.5rem; border-radius: 8px; transition: box-shadow 0.3s;">
+                        <h3 style="color: #2c3e50; margin-bottom: 0.5rem;">{{ item.name }}</h3>
+                        <p style="color: #7f8c8d; margin-bottom: 1rem; min-height: 60px;">{{ item.description }}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 1.3rem; font-weight: bold; color: #27ae60;">${{ "%.2f"|format(item.price) }}</span>
+                            {% if item.available %}
+                                <button class="btn" style="padding: 8px 15px;">Add to Order</button>
+                            {% else %}
+                                <span style="color: #e74c3c; font-weight: bold;">Unavailable</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div style="background: white; padding: 3rem; border-radius: 10px; text-align: center;">
+        <p style="color: #7f8c8d; font-size: 1.2rem;">No menu items available at the moment.</p>
+        <p style="color: #7f8c8d; margin-top: 1rem;">We'll add some sample items for testing soon!</p>
+    </div>
+{% endif %}
+{% endblock %}

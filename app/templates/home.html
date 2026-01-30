@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}CloudBite - Home{% endblock %}
+
+{% block content %}
+<div style="text-align: center; margin: 3rem 0;">
+    <h1 style="font-size: 3rem; color: #2c3e50;">Welcome to CloudBite! 🍕</h1>
+    <p style="font-size: 1.2rem; color: #7f8c8d; margin: 1rem 0;">
+        Your favorite cloud-based restaurant ordering system
+    </p>
+    <div style="margin: 2rem 0;">
+        <a href="{{ url_for('menu.menu_list') }}" class="btn" style="margin: 0 10px;">View Menu</a>
+        {% if not session.user_id %}
+            <a href="{{ url_for('auth.register') }}" class="btn btn-secondary" style="margin: 0 10px;">Sign Up</a>
+        {% endif %}
+    </div>
+</div>
+
+<div style="background: white; padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+    <h2 style="color: #2c3e50; margin-bottom: 1rem;">Featured Items</h2>
+    
+    {% if featured_items %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem;">
+            {% for item in featured_items %}
+                <div style="border: 1px solid #ddd; padding: 1rem; border-radius: 8px;">
+                    <h3 style="color: #e74c3c;">{{ item.name }}</h3>
+                    <p style="color: #7f8c8d; font-size: 0.9rem;">{{ item.description }}</p>
+                    <p style="font-weight: bold; margin-top: 0.5rem;">${{ "%.2f"|format(item.price) }}</p>
+                    <span style="background: #27ae60; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.8rem;">
+                        {{ item.category }}
+                    </span>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="color: #7f8c8d;">No featured items available. Check back soon!</p>
+    {% endif %}
+</div>
+
+<div style="background: white; padding: 2rem; border-radius: 10px; margin: 2rem 0;">
+    <h2 style="color: #2c3e50; margin-bottom: 1rem;">Why Choose CloudBite?</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 1.5rem;">
+        <div>
+            <h3 style="color: #e74c3c;">🚀 Fast Delivery</h3>
+            <p>Quick and reliable delivery to your doorstep</p>
+        </div>
+        <div>
+            <h3 style="color: #e74c3c;">🍽️ Quality Food</h3>
+            <p>Fresh ingredients and delicious recipes</p>
+        </div>
+        <div>
+            <h3 style="color: #e74c3c;">💳 Secure Payment</h3>
+            <p>Safe and encrypted payment processing</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

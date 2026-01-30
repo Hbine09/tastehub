@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}My Orders - CloudBite{% endblock %}
+
+{% block content %}
+<h1 style="color: #2c3e50; margin-bottom: 2rem;">My Orders</h1>
+
+{% if orders %}
+    {% for order in orders %}
+        <div style="background: white; padding: 1.5rem; border-radius: 10px; margin-bottom: 1.5rem; border-left: 4px solid #e74c3c;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div>
+                    <h3 style="color: #2c3e50;">Order #{{ order.id[:8] }}</h3>
+                    <p style="color: #7f8c8d; font-size: 0.9rem;">{{ order.created_at.strftime('%B %d, %Y at %I:%M %p') if order.created_at else 'N/A' }}</p>
+                </div>
+                <div>
+                    <span style="background: #3498db; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold;">
+                        {{ order.status.upper() }}
+                    </span>
+                </div>
+            </div>
+            
+            <div style="border-top: 1px solid #eee; padding-top: 1rem;">
+                <h4 style="color: #2c3e50; margin-bottom: 0.5rem;">Items:</h4>
+                <ul style="list-style: none; padding: 0;">
+                    {% for item in order.items %}
+                        <li style="padding: 0.3rem 0; color: #555;">
+                            {{ item.name }} x {{ item.quantity }} - ${{ "%.2f"|format(item.price * item.quantity) }}
+                        </li>
+                    {% endfor %}
+                </ul>
+                <p style="font-size: 1.2rem; font-weight: bold; color: #27ae60; margin-top: 1rem; text-align: right;">
+                    Total: ${{ "%.2f"|format(order.total) }}
+                </p>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div style="background: white; padding: 3rem; border-radius: 10px; text-align: center;">
+        <p style="color: #7f8c8d; font-size: 1.2rem;">You haven't placed any orders yet.</p>
+        <a href="{{ url_for('menu.menu_list') }}" class="btn" style="margin-top: 1.5rem; display: inline-block;">Browse Menu</a>
+    </div>
+{% endif %}
+{% endblock %}
