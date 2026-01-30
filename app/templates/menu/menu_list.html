@@ -19,11 +19,15 @@
                         <p style="color: #7f8c8d; margin-bottom: 1rem; min-height: 60px;">{{ item.description }}</p>
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <span style="font-size: 1.3rem; font-weight: bold; color: #27ae60;">${{ "%.2f"|format(item.price) }}</span>
-                            {% if item.available %}
-                                <button class="btn" style="padding: 8px 15px;">Add to Order</button>
-                            {% else %}
-                                <span style="color: #e74c3c; font-weight: bold;">Unavailable</span>
-                            {% endif %}
+{% if item.available %}
+    {% if session.user_id %}
+        <a href="{{ url_for('orders.create_order') }}" class="btn" style="padding: 8px 15px; text-decoration: none;">Order Now</a>
+    {% else %}
+        <a href="{{ url_for('auth.login') }}" class="btn" style="padding: 8px 15px; text-decoration: none;">Login to Order</a>
+    {% endif %}
+{% else %}
+    <span style="color: #e74c3c; font-weight: bold;">Unavailable</span>
+{% endif %}
                         </div>
                     </div>
                 {% endfor %}

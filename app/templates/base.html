@@ -137,17 +137,18 @@
     <nav>
         <div class="container">
             <div class="logo">🍕 CloudBite</div>
-            <ul>
-                <li><a href="{{ url_for('main.home') }}">Home</a></li>
-                <li><a href="{{ url_for('menu.menu_list') }}">Menu</a></li>
-                {% if session.user_id %}
-                    <li><a href="{{ url_for('orders.order_list') }}">My Orders</a></li>
-                    <li><a href="{{ url_for('auth.logout') }}">Logout ({{ session.user_name }})</a></li>
-                {% else %}
-                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-                    <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                {% endif %}
-            </ul>
+<ul>
+    <li><a href="{{ url_for('main.home') }}">Home</a></li>
+    <li><a href="{{ url_for('menu.menu_list') }}">Menu</a></li>
+    {% if session.user_id %}
+        <li><a href="{{ url_for('orders.create_order') }}">Place Order</a></li>
+        <li><a href="{{ url_for('orders.order_list') }}">My Orders</a></li>
+        <li><a href="{{ url_for('auth.logout') }}">Logout ({{ session.user_name }})</a></li>
+    {% else %}
+        <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+        <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+    {% endif %}
+</ul>
         </div>
     </nav>
     
