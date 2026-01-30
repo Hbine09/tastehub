@@ -11,3 +11,6 @@ psycopg2-binary==2.9.9
 cloud-sql-python-connector==1.11.0
 pytest==7.4.3
 requests==2.31.0
+functions-framework==3.*
+google-cloud-firestore==2.14.0
+requests==2.31.0

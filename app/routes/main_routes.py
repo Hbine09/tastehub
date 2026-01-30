@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, session
 from app import db
+import os
 
 bp = Blueprint('main', __name__)
 
@@ -24,8 +25,9 @@ def home():
 
 @bp.route('/about')
 def about():
-    """About page"""
-    return render_template('about.html')
+    """About page with Google Maps"""
+    google_maps_key = os.getenv('GOOGLE_MAPS_API_KEY', '')
+    return render_template('about.html', google_maps_key=google_maps_key)
 
 @bp.route('/api-docs')
 def api_docs():

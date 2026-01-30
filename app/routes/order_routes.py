@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from app import db
 from app.models.sql_models import get_db_session, SQLOrder, SQLOrderItem
 from datetime import datetime
+import os  # ADD THIS LINE
 
 bp = Blueprint('orders', __name__, url_prefix='/orders')
 
@@ -96,6 +97,34 @@ def create_order():
             'status': 'pending'
         }
         db.collection('order_logs').add(order_data)
+        
+        # ========== INSERT CLOUD FUNCTION CALL HERE ==========
+        # Prepare notification payload for Cloud Function
+        notification_payload = {
+            'order_id': order_id,
+            'user_email': session['user_email'],
+            'user_name': session['user_name'],
+            'total': total,
+            'items_count': len(items)
+        }
+        
+        # Call Cloud Function for order notification
+        # Note: Replace with your actual Cloud Function URL after deployment
+        cloud_function_url = os.getenv('CLOUD_FUNCTION_ORDER_NOTIFICATION_URL', '')
+        
+        if cloud_function_url:
+            try:
+                import requests
+                response = requests.post(
+                    cloud_function_url,
+                    json=notification_payload,
+                    timeout=5
+                )
+                print(f"Cloud Function response: {response.status_code}")
+            except Exception as cf_error:
+                # Don't fail the order if notification fails
+                print(f"Cloud Function error: {cf_error}")
+        # ====================================================
         
         if request.is_json:
             return jsonify({

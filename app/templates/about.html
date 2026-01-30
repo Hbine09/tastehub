@@ -2,21 +2,240 @@
 
 {% block title %}About - CloudBite{% endblock %}
 
+{% block extra_css %}
+<style>
+    .about-section {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+    
+    .section-title {
+        color: #2c3e50;
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 3px solid #e74c3c;
+    }
+    
+    .location-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-top: 2rem;
+    }
+    
+    .location-card h3 {
+        margin: 0 0 1rem 0;
+        font-size: 1.5rem;
+    }
+    
+    .location-card p {
+        margin: 0.5rem 0;
+        font-size: 1.1rem;
+    }
+    
+    #map {
+        width: 100%;
+        height: 450px;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        margin: 2rem 0;
+    }
+    
+    .tech-stack-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .tech-item {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        border-left: 4px solid #e74c3c;
+        transition: all 0.3s ease;
+    }
+    
+    .tech-item:hover {
+        transform: translateX(10px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div style="background: white; padding: 2rem; border-radius: 10px;">
-    <h1 style="color: #2c3e50; margin-bottom: 1rem;">About CloudBite</h1>
+<div class="about-section">
+    <h1 class="section-title">🍕 About CloudBite</h1>
     <p style="font-size: 1.1rem; line-height: 1.8; color: #555;">
         CloudBite is a modern cloud-based restaurant ordering platform built with cutting-edge technology.
         We leverage Google Cloud Platform to provide a fast, secure, and reliable ordering experience.
+        Our mission is to bring delicious food to your doorstep using the power of cloud computing.
     </p>
+</div>
+
+<div class="about-section">
+    <h2 class="section-title">📍 Our Location</h2>
     
-    <h2 style="color: #2c3e50; margin-top: 2rem; margin-bottom: 1rem;">Our Technology Stack</h2>
-    <ul style="list-style: none; padding: 0;">
-        <li style="padding: 0.5rem 0;"> Google App Engine for scalable hosting</li>
-        <li style="padding: 0.5rem 0;"> Cloud Firestore for real-time data</li>
-        <li style="padding: 0.5rem 0;"> Cloud SQL for transactional data</li>
-        <li style="padding: 0.5rem 0;"> Firebase Authentication for security</li>
-        <li style="padding: 0.5rem 0;"> RESTful APIs for seamless integration</li>
+    <!-- Google Map -->
+    <div id="map"></div>
+    
+    <div class="location-card">
+        <h3>🏪 CloudBite Restaurant</h3>
+        <p>📍 Address: 123 Cloud Street, Tech Valley, Innovation City</p>
+        <p>📞 Phone: +1 (555) 123-4567</p>
+        <p>📧 Email: info@cloudbite.com</p>
+        <p>⏰ Hours: Monday - Sunday, 10:00 AM - 11:00 PM</p>
+        <p>🚗 Free Parking Available</p>
+    </div>
+</div>
+
+<div class="about-section">
+    <h2 class="section-title">💻 Our Technology Stack</h2>
+    
+    <div class="tech-stack-grid">
+        <div class="tech-item">
+            <h3 style="color: #e74c3c; margin-bottom: 0.5rem;">☁️ Cloud Platform</h3>
+            <p style="color: #555;">Google App Engine for scalable hosting</p>
+        </div>
+        
+        <div class="tech-item">
+            <h3 style="color: #e74c3c; margin-bottom: 0.5rem;">🔥 NoSQL Database</h3>
+            <p style="color: #555;">Cloud Firestore for real-time data</p>
+        </div>
+        
+        <div class="tech-item">
+            <h3 style="color: #e74c3c; margin-bottom: 0.5rem;">🗄️ SQL Database</h3>
+            <p style="color: #555;">Cloud SQL PostgreSQL for transactions</p>
+        </div>
+        
+        <div class="tech-item">
+            <h3 style="color: #e74c3c; margin-bottom: 0.5rem;">🔐 Authentication</h3>
+            <p style="color: #555;">Firebase Auth & bcrypt hashing</p>
+        </div>
+        
+        <div class="tech-item">
+            <h3 style="color: #e74c3c; margin-bottom: 0.5rem;">⚡ Cloud Functions</h3>
+            <p style="color: #555;">Serverless order notifications</p>
+        </div>
+        
+        <div class="tech-item">
+            <h3 style="color: #e74c3c; margin-bottom: 0.5rem;">🗺️ Maps Integration</h3>
+            <p style="color: #555;">Google Maps JavaScript API</p>
+        </div>
+        
+        <div class="tech-item">
+            <h3 style="color: #e74c3c; margin-bottom: 0.5rem;">🔌 RESTful APIs</h3>
+            <p style="color: #555;">Custom APIs for seamless integration</p>
+        </div>
+        
+        <div class="tech-item">
+            <h3 style="color: #e74c3c; margin-bottom: 0.5rem;">🐍 Backend Framework</h3>
+            <p style="color: #555;">Flask for rapid development</p>
+        </div>
+    </div>
+</div>
+
+<div class="about-section">
+    <h2 class="section-title">🌟 Why Choose Us?</h2>
+    <ul style="list-style: none; padding: 0; line-height: 2.5;">
+        <li style="font-size: 1.1rem;">✅ <strong>99.9% Uptime</strong> - Powered by Google Cloud infrastructure</li>
+        <li style="font-size: 1.1rem;">✅ <strong>Bank-Level Security</strong> - Multiple security layers protect your data</li>
+        <li style="font-size: 1.1rem;">✅ <strong>Real-Time Updates</strong> - Track your order every step of the way</li>
+        <li style="font-size: 1.1rem;">✅ <strong>Fast Delivery</strong> - 30-minute delivery guarantee</li>
+        <li style="font-size: 1.1rem;">✅ <strong>Fresh Ingredients</strong> - Sourced daily from local suppliers</li>
+        <li style="font-size: 1.1rem;">✅ <strong>Award-Winning Chefs</strong> - Crafted with passion and expertise</li>
     </ul>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function initMap() {
+    // CloudBite location (Qatar - near you!)
+    const cloudBiteLocation = { lat: 25.276987, lng: 51.520008 }; // Doha, Qatar
+    
+    const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 15,
+        center: cloudBiteLocation,
+        mapTypeControl: true,
+        streetViewControl: true,
+        fullscreenControl: true,
+        styles: [
+            {
+                featureType: "poi.business",
+                elementType: "labels",
+                stylers: [{ visibility: "off" }]
+            }
+        ]
+    });
+    
+    // Restaurant marker
+    const marker = new google.maps.Marker({
+        position: cloudBiteLocation,
+        map: map,
+        title: "CloudBite Restaurant",
+        animation: google.maps.Animation.DROP,
+        icon: {
+            url: "http://maps.google.com/mapfiles/ms/icons/restaurant.png"
+        }
+    });
+    
+    // Info window
+    const infoWindow = new google.maps.InfoWindow({
+        content: `
+            <div style="padding: 15px; max-width: 250px;">
+                <h3 style="margin: 0 0 10px 0; color: #e74c3c; font-size: 1.2rem;">🍕 CloudBite Restaurant</h3>
+                <p style="margin: 5px 0; color: #555;"><strong>Rating:</strong> ⭐⭐⭐⭐⭐ (4.9/5)</p>
+                <p style="margin: 5px 0; color: #555;"><strong>Cuisine:</strong> International</p>
+                <p style="margin: 5px 0; color: #555;"><strong>Delivery:</strong> 20-30 min</p>
+                <a href="{{ url_for('menu.menu_list') }}" style="display: inline-block; margin-top: 10px; background: #e74c3c; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px;">Order Now</a>
+            </div>
+        `
+    });
+    
+    // Click marker to show info
+    marker.addListener("click", () => {
+        infoWindow.open(map, marker);
+    });
+    
+    // Show info window by default
+    infoWindow.open(map, marker);
+    
+    // Add delivery radius circle
+    const deliveryCircle = new google.maps.Circle({
+        strokeColor: "#e74c3c",
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: "#e74c3c",
+        fillOpacity: 0.15,
+        map: map,
+        center: cloudBiteLocation,
+        radius: 5000 // 5km delivery radius
+    });
+}
+
+// Handle map loading errors
+window.addEventListener('error', function(e) {
+    if (e.message.includes('Google Maps')) {
+        document.getElementById('map').innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f8f9fa; color: #e74c3c; font-size: 1.2rem;">Map loading... Please refresh if it doesn\'t appear.</div>';
+    }
+}, true);
+</script>
+
+{% if google_maps_key %}
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_key }}&callback=initMap"
+    onerror="document.getElementById('map').innerHTML='<div style=\'padding: 2rem; text-align: center; background: #f8f9fa; border-radius: 10px;\'><p style=\'color: #e74c3c;\'>Unable to load map. Please check your API key configuration.</p></div>'">
+</script>
+{% else %}
+<script>
+    document.getElementById('map').innerHTML = '<div style="padding: 2rem; text-align: center; background: #f8f9fa; border-radius: 10px;"><p style="color: #e74c3c;">Map API key not configured.</p></div>';
+</script>
+{% endif %}
 {% endblock %}
