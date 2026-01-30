@@ -39,18 +39,12 @@ def order_list():
     
     return render_template('orders/order_list.html', orders=user_orders)
 
-@bp.route('/create', methods=['GET', 'POST'])
+@bp.route('/create', methods=['POST'])
 def create_order():
-    """Create a new order - displays order form or processes submission"""
+    """Create a new order - API endpoint only"""
     if 'user_id' not in session:
-        flash('Please login to place an order', 'error')
-        return redirect(url_for('auth.login'))
+        return jsonify({'success': False, 'error': 'Not authenticated'}), 401
     
-    if request.method == 'GET':
-        # Display order creation form
-        return render_template('orders/create_order.html')
-    
-    # POST request - process order
     try:
         data = request.get_json() if request.is_json else request.form
         items = data.get('items', [])
