@@ -10,27 +10,51 @@
         <div style="background: white; padding: 1.5rem; border-radius: 10px; margin-bottom: 1.5rem; border-left: 4px solid #e74c3c;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <div>
-                    <h3 style="color: #2c3e50;">Order #{{ order.id[:8] }}</h3>
-                    <p style="color: #7f8c8d; font-size: 0.9rem;">{{ order.created_at.strftime('%B %d, %Y at %I:%M %p') if order.created_at else 'N/A' }}</p>
+                    <h3 style="color: #2c3e50;">Order #{{ order['id'] }}</h3>
+                    <p style="color: #7f8c8d; font-size: 0.9rem;">
+                        {% if order['created_at'] %}
+                            {{ order['created_at'].strftime('%B %d, %Y at %I:%M %p') }}
+                        {% else %}
+                            Date not available
+                        {% endif %}
+                    </p>
                 </div>
                 <div>
-                    <span style="background: #3498db; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold;">
-                        {{ order.status.upper() }}
-                    </span>
+                    {% if order['status'] == 'pending' %}
+                        <span style="background: #f39c12; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold;">
+                            PENDING
+                        </span>
+                    {% elif order['status'] == 'completed' %}
+                        <span style="background: #27ae60; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold;">
+                            COMPLETED
+                        </span>
+                    {% elif order['status'] == 'cancelled' %}
+                        <span style="background: #e74c3c; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold;">
+                            CANCELLED
+                        </span>
+                    {% else %}
+                        <span style="background: #3498db; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold;">
+                            {{ order['status'].upper() }}
+                        </span>
+                    {% endif %}
                 </div>
             </div>
             
             <div style="border-top: 1px solid #eee; padding-top: 1rem;">
                 <h4 style="color: #2c3e50; margin-bottom: 0.5rem;">Items:</h4>
                 <ul style="list-style: none; padding: 0;">
-                    {% for item in order.items %}
-                        <li style="padding: 0.3rem 0; color: #555;">
-                            {{ item.name }} x {{ item.quantity }} - ${{ "%.2f"|format(item.price * item.quantity) }}
-                        </li>
-                    {% endfor %}
+                    {% if order['items'] %}
+                        {% for item in order['items'] %}
+                            <li style="padding: 0.3rem 0; color: #555;">
+                                {{ item['item_name'] }} x {{ item['quantity'] }} - ${{ "%.2f"|format(item['item_price'] * item['quantity']) }}
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li style="padding: 0.3rem 0; color: #e74c3c;">No items found</li>
+                    {% endif %}
                 </ul>
                 <p style="font-size: 1.2rem; font-weight: bold; color: #27ae60; margin-top: 1rem; text-align: right;">
-                    Total: ${{ "%.2f"|format(order.total) }}
+                    Total: ${{ "%.2f"|format(order['total']) }}
                 </p>
             </div>
         </div>

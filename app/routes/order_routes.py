@@ -19,13 +19,21 @@ def order_list():
         db_session = get_db_session()
         sql_orders = db_session.query(SQLOrder).filter_by(user_id=user_id).order_by(SQLOrder.created_at.desc()).all()
         
-        # Convert to dict for template
-        user_orders = [order.to_dict() for order in sql_orders]
+        # Convert to dict for template - with debugging
+        user_orders = []
+        for order in sql_orders:
+            order_dict = order.to_dict()
+            print(f"DEBUG - Order dict keys: {order_dict.keys()}")
+            print(f"DEBUG - Order items type: {type(order_dict.get('items'))}")
+            print(f"DEBUG - Order items value: {order_dict.get('items')}")
+            user_orders.append(order_dict)
         
         db_session.close()
         
     except Exception as e:
         print(f"Error fetching orders from SQL: {e}")
+        import traceback
+        traceback.print_exc()
         user_orders = []
         flash('Error loading orders', 'error')
     

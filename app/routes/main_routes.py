@@ -26,3 +26,8 @@ def home():
 def about():
     """About page"""
     return render_template('about.html')
+
+@bp.route('/api-docs')
+def api_docs():
+    """API Documentation page"""
+    return render_template('api_docs.html')

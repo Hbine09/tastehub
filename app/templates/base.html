@@ -140,6 +140,7 @@
 <ul>
     <li><a href="{{ url_for('main.home') }}">Home</a></li>
     <li><a href="{{ url_for('menu.menu_list') }}">Menu</a></li>
+    <li><a href="{{ url_for('main.api_docs') }}">API Docs</a></li>
     {% if session.user_id %}
         <li><a href="{{ url_for('orders.create_order') }}">Place Order</a></li>
         <li><a href="{{ url_for('orders.order_list') }}">My Orders</a></li>

@@ -68,7 +68,8 @@ def get_db_engine():
     
     # Connection string for PostgreSQL
     connection_string = f"postgresql://{db_user}:{db_password}@{db_host}/{db_name}"
-    engine = create_engine(connection_string)
+    
+    engine = create_engine(connection_string, echo=False)  # Changed echo to False for cleaner output
     return engine
 
 def get_db_session():

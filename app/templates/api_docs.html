@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}API Documentation - CloudBite{% endblock %}
+
+{% block content %}
+<h1 style="color: #2c3e50; margin-bottom: 2rem;">CloudBite REST API Documentation</h1>
+
+<div style="background: white; padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+    <h2 style="color: #e74c3c; margin-bottom: 1rem;">Overview</h2>
+    <p style="line-height: 1.8;">
+        CloudBite provides RESTful APIs for accessing menu items and orders. 
+        All API endpoints return JSON responses and require authentication where specified.
+    </p>
+</div>
+
+<div style="background: white; padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+    <h2 style="color: #e74c3c; margin-bottom: 1rem;">Available Endpoints</h2>
+    
+    <!-- Menu API -->
+    <div style="border-left: 4px solid #27ae60; padding-left: 1rem; margin-bottom: 2rem;">
+        <h3 style="color: #2c3e50;">GET /menu/api/items</h3>
+        <p><strong>Description:</strong> Retrieve all menu items from Firestore</p>
+        <p><strong>Authentication:</strong> Not required</p>
+        <p><strong>Response:</strong></p>
+        <pre style="background: #f4f4f4; padding: 1rem; border-radius: 5px; overflow-x: auto;">
+{
+    "success": true,
+    "items": [
+        {
+            "id": "item_id",
+            "name": "Margherita Pizza",
+            "description": "Classic pizza...",
+            "price": 12.99,
+            "category": "Pizza",
+            "available": true
+        }
+    ],
+    "count": 12
+}</pre>
+        <button onclick="testMenuAPI()" class="btn" style="margin-top: 1rem;">Test This Endpoint</button>
+        <div id="menuAPIResult" style="margin-top: 1rem;"></div>
+    </div>
+    
+    <!-- Orders API -->
+    <div style="border-left: 4px solid #3498db; padding-left: 1rem; margin-bottom: 2rem;">
+        <h3 style="color: #2c3e50;">GET /orders/api/orders</h3>
+        <p><strong>Description:</strong> Retrieve user's orders from Cloud SQL</p>
+        <p><strong>Authentication:</strong> Required (must be logged in)</p>
+        <p><strong>Response:</strong></p>
+        <pre style="background: #f4f4f4; padding: 1rem; border-radius: 5px; overflow-x: auto;">
+{
+    "success": true,
+    "orders": [
+        {
+            "id": 1,
+            "user_id": "user123",
+            "total": 34.97,
+            "status": "pending",
+            "items": [...]
+        }
+    ],
+    "count": 5
+}</pre>
+        {% if session.user_id %}
+        <button onclick="testOrdersAPI()" class="btn" style="margin-top: 1rem;">Test This Endpoint</button>
+        {% else %}
+        <p style="color: #e74c3c; margin-top: 1rem;">Please login to test this endpoint</p>
+        {% endif %}
+        <div id="ordersAPIResult" style="margin-top: 1rem;"></div>
+    </div>
+    
+    <!-- Create Order API -->
+    <div style="border-left: 4px solid #e74c3c; padding-left: 1rem; margin-bottom: 2rem;">
+        <h3 style="color: #2c3e50;">POST /orders/create</h3>
+        <p><strong>Description:</strong> Create a new order</p>
+        <p><strong>Authentication:</strong> Required (must be logged in)</p>
+        <p><strong>Request Body:</strong></p>
+        <pre style="background: #f4f4f4; padding: 1rem; border-radius: 5px; overflow-x: auto;">
+{
+    "items": [
+        {
+            "name": "Margherita Pizza",
+            "price": 12.99,
+            "quantity": 2
+        }
+    ]
+}</pre>
+        <p><strong>Response:</strong></p>
+        <pre style="background: #f4f4f4; padding: 1rem; border-radius: 5px; overflow-x: auto;">
+{
+    "success": true,
+    "order_id": 1,
+    "message": "Order created successfully"
+}</pre>
+    </div>
+</div>
+
+<div style="background: white; padding: 2rem; border-radius: 10px;">
+    <h2 style="color: #e74c3c; margin-bottom: 1rem;">Database Architecture</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <div>
+            <h3 style="color: #27ae60; margin-bottom: 1rem;">🔥 Firestore (NoSQL)</h3>
+            <ul style="line-height: 2;">
+                <li>Menu Items</li>
+                <li>User Profiles</li>
+                <li>Order Logs</li>
+                <li>Reviews (future)</li>
+            </ul>
+            <p style="margin-top: 1rem; color: #7f8c8d;">
+                <strong>Why Firestore?</strong> Flexible schema for menu items, easy to update, real-time capabilities
+            </p>
+        </div>
+        <div>
+            <h3 style="color: #3498db; margin-bottom: 1rem;">🗄️ Cloud SQL (PostgreSQL)</h3>
+            <ul style="line-height: 2;">
+                <li>Orders (transactional)</li>
+                <li>Order Items (relational)</li>
+                <li>Payment Records (future)</li>
+                <li>Analytics Data (future)</li>
+            </ul>
+            <p style="margin-top: 1rem; color: #7f8c8d;">
+                <strong>Why Cloud SQL?</strong> ACID compliance for orders, complex joins, transactional integrity
+            </p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function testMenuAPI() {
+    const resultDiv = document.getElementById('menuAPIResult');
+    resultDiv.innerHTML = '<p style="color: #7f8c8d;">Loading...</p>';
+    
+    fetch('/menu/api/items')
+        .then(response => response.json())
+        .then(data => {
+            resultDiv.innerHTML = `
+                <div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 1rem; border-radius: 5px;">
+                    <strong>✅ Success!</strong>
+                    <pre style="margin-top: 0.5rem; overflow-x: auto;">${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+        })
+        .catch(error => {
+            resultDiv.innerHTML = `
+                <div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 1rem; border-radius: 5px;">
+                    <strong>❌ Error:</strong> ${error.message}
+                </div>
+            `;
+        });
+}
+
+function testOrdersAPI() {
+    const resultDiv = document.getElementById('ordersAPIResult');
+    resultDiv.innerHTML = '<p style="color: #7f8c8d;">Loading...</p>';
+    
+    fetch('/orders/api/orders')
+        .then(response => response.json())
+        .then(data => {
+            resultDiv.innerHTML = `
+                <div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 1rem; border-radius: 5px;">
+                    <strong>✅ Success!</strong>
+                    <pre style="margin-top: 0.5rem; overflow-x: auto;">${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+        })
+        .catch(error => {
+            resultDiv.innerHTML = `
+                <div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 1rem; border-radius: 5px;">
+                    <strong>❌ Error:</strong> ${error.message}
+                </div>
+            `;
+        });
+}
+</script>
+{% endblock %}
