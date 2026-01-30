@@ -1,0 +1,11 @@
+runtime: python311
+
+env_variables:
+  FLASK_ENV: 'production'
+
+handlers:
+- url: /static
+  static_dir: app/static
+  
+- url: /.*
+  script: auto
