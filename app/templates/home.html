@@ -2,56 +2,199 @@
 
 {% block title %}CloudBite - Home{% endblock %}
 
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 4rem 2rem;
+        border-radius: 20px;
+        text-align: center;
+        margin-bottom: 3rem;
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
+    }
+    
+    .hero-section h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    
+    .hero-section p {
+        font-size: 1.3rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+    
+    .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .cta-btn {
+        padding: 15px 35px;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+    
+    .cta-btn-primary {
+        background: white;
+        color: #667eea;
+    }
+    
+    .cta-btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+    
+    .cta-btn-secondary {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 2px solid white;
+    }
+    
+    .cta-btn-secondary:hover {
+        background: white;
+        color: #667eea;
+        transform: translateY(-3px);
+    }
+    
+    .featured-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+    
+    .featured-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+    
+    .featured-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .feature-box {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .feature-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+    
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #2c3e50;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div style="text-align: center; margin: 3rem 0;">
-    <h1 style="font-size: 3rem; color: #2c3e50;">Welcome to CloudBite! 🍕</h1>
-    <p style="font-size: 1.2rem; color: #7f8c8d; margin: 1rem 0;">
-        Your favorite cloud-based restaurant ordering system
-    </p>
-    <div style="margin: 2rem 0;">
-        <a href="{{ url_for('menu.menu_list') }}" class="btn" style="margin: 0 10px;">View Menu</a>
+<div class="hero-section">
+    <h1>🍕 Welcome to CloudBite!</h1>
+    <p>Your favorite cloud-based restaurant ordering system</p>
+    <p style="font-size: 1rem; opacity: 0.9;">Delicious food, lightning-fast delivery, powered by Google Cloud</p>
+    
+    <div class="cta-buttons">
+        <a href="{{ url_for('menu.menu_list') }}" class="cta-btn cta-btn-primary">🍽️ View Menu</a>
         {% if not session.user_id %}
-            <a href="{{ url_for('auth.register') }}" class="btn btn-secondary" style="margin: 0 10px;">Sign Up</a>
+            <a href="{{ url_for('auth.register') }}" class="cta-btn cta-btn-secondary">🚀 Sign Up Free</a>
         {% endif %}
     </div>
 </div>
 
-<div style="background: white; padding: 2rem; border-radius: 10px; margin: 2rem 0;">
-    <h2 style="color: #2c3e50; margin-bottom: 1rem;">Featured Items</h2>
+<div style="background: white; padding: 2.5rem; border-radius: 20px; margin-bottom: 2.5rem; box-shadow: 0 5px 20px rgba(0,0,0,0.08);">
+    <h2 class="section-title">✨ Featured Items</h2>
     
     {% if featured_items %}
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem;">
             {% for item in featured_items %}
-                <div style="border: 1px solid #ddd; padding: 1rem; border-radius: 8px;">
-                    <h3 style="color: #e74c3c;">{{ item.name }}</h3>
-                    <p style="color: #7f8c8d; font-size: 0.9rem;">{{ item.description }}</p>
-                    <p style="font-weight: bold; margin-top: 0.5rem;">${{ "%.2f"|format(item.price) }}</p>
-                    <span style="background: #27ae60; color: white; padding: 3px 8px; border-radius: 3px; font-size: 0.8rem;">
-                        {{ item.category }}
-                    </span>
+                <div class="featured-card">
+                    {% if item.image_url %}
+                        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="featured-image">
+                    {% else %}
+                        <div class="featured-image" style="display: flex; align-items: center; justify-content: center; font-size: 4rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            🍽️
+                        </div>
+                    {% endif %}
+                    
+                    <div style="padding: 1.5rem;">
+                        <span style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; padding: 4px 12px; border-radius: 15px; font-size: 0.8rem; font-weight: 600;">
+                            {{ item.category }}
+                        </span>
+                        <h3 style="color: #2c3e50; margin: 1rem 0 0.5rem 0; font-size: 1.3rem;">{{ item.name }}</h3>
+                        <p style="color: #7f8c8d; font-size: 0.95rem; margin-bottom: 1rem;">{{ item.description }}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 1.4rem; font-weight: 800; color: #27ae60;">${{ "%.2f"|format(item.price) }}</span>
+                            <a href="{{ url_for('menu.menu_list') }}" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; padding: 8px 20px; border-radius: 20px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;">
+                                Order Now
+                            </a>
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
         </div>
     {% else %}
-        <p style="color: #7f8c8d;">No featured items available. Check back soon!</p>
+        <p style="text-align: center; color: #7f8c8d; font-size: 1.1rem;">Check out our amazing menu items!</p>
     {% endif %}
 </div>
 
-<div style="background: white; padding: 2rem; border-radius: 10px; margin: 2rem 0;">
-    <h2 style="color: #2c3e50; margin-bottom: 1rem;">Why Choose CloudBite?</h2>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 1.5rem;">
-        <div>
-            <h3 style="color: #e74c3c;">🚀 Fast Delivery</h3>
-            <p>Quick and reliable delivery to your doorstep</p>
+<div style="background: white; padding: 2.5rem; border-radius: 20px; margin-bottom: 2.5rem; box-shadow: 0 5px 20px rgba(0,0,0,0.08);">
+    <h2 class="section-title">🌟 Why Choose CloudBite?</h2>
+    <div class="features-grid">
+        <div class="feature-box">
+            <div class="feature-icon">🚀</div>
+            <h3 style="color: #e74c3c; margin-bottom: 0.5rem; font-size: 1.3rem;">Fast Delivery</h3>
+            <p style="color: #7f8c8d;">Lightning-fast delivery to your doorstep within 30 minutes</p>
         </div>
-        <div>
-            <h3 style="color: #e74c3c;">🍽️ Quality Food</h3>
-            <p>Fresh ingredients and delicious recipes</p>
-        </div>
-        <div>
-            <h3 style="color: #e74c3c;">💳 Secure Payment</h3>
-            <p>Safe and encrypted payment processing</p>
-        </div>
+        <div class="feature-box">
+            <div class="feature-icon">🍽️</div>
+            <h3 style="color: #e74c3c; margin-bottom: 0.5rem; font-size: 1.3rem;">Quality Food</h3>
+            <p style="color: #7f8c8d;">Fresh ingredients and chef-crafted recipes every time</p>
+             </div>
+    <div class="feature-box">
+        <div class="feature-icon">💳</div>
+        <h3 style="color: #e74c3c; margin-bottom: 0.5rem; font-size: 1.3rem;">Secure Payment</h3>
+        <p style="color: #7f8c8d;">Bank-level encryption for all transactions</p>
     </div>
+    <div class="feature-box">
+        <div class="feature-icon">☁️</div>
+        <h3 style="color: #e74c3c; margin-bottom: 0.5rem; font-size: 1.3rem;">Cloud-Powered</h3>
+        <p style="color: #7f8c8d;">Built on Google Cloud for 99.9% uptime</p>
+    </div>
+</div>
 </div>
 {% endblock %}
