@@ -6,15 +6,22 @@
 <style>
     .cart-badge {
         position: fixed;
-        top: 20px;
+        top: 80px;
         right: 20px;
-        background: #e74c3c;
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
         color: white;
         padding: 15px 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        border-radius: 50px;
+        box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
         cursor: pointer;
         z-index: 1000;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+    
+    .cart-badge:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(231, 76, 60, 0.5);
     }
     
     .cart-modal {
@@ -24,26 +31,203 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0,0,0,0.5);
+        background: rgba(0,0,0,0.7);
         z-index: 2000;
         justify-content: center;
         align-items: center;
+        backdrop-filter: blur(5px);
     }
     
     .cart-content {
         background: white;
         padding: 2rem;
-        border-radius: 10px;
+        border-radius: 15px;
         max-width: 600px;
         width: 90%;
         max-height: 80vh;
         overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    
+    .menu-item-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .menu-item-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    }
+    
+    .menu-item-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .menu-item-content {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .menu-item-title {
+        color: #2c3e50;
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .menu-item-description {
+        color: #7f8c8d;
+        flex-grow: 1;
+        margin-bottom: 1rem;
+        line-height: 1.6;
+    }
+    
+    .menu-item-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+        padding-top: 1rem;
+        border-top: 2px solid #f4f4f4;
+    }
+    
+    .price-tag {
+        font-size: 1.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .category-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .add-to-cart-btn {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+    }
+    
+    .add-to-cart-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+    }
+    
+    .category-section {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 20px;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    
+    .category-title {
+        color: #e74c3c;
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 3px solid #e74c3c;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 0;
+        border-radius: 20px;
+        margin-bottom: 3rem;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+    
+    .page-header h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin: 0;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    
+    .notification {
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        z-index: 3000;
+        box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
+        animation: slideIn 0.3s ease-out;
+        font-weight: 600;
+    }
+    
+    @keyframes slideIn {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    .empty-cart-message {
+        text-align: center;
+        padding: 3rem;
+        color: #7f8c8d;
+    }
+    
+    .cart-item {
+        border: 2px solid #ecf0f1;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        background: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+    
+    .cart-item:hover {
+        border-color: #3498db;
+        background: white;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<h1 style="color: #2c3e50; margin-bottom: 2rem; text-align: center;">Our Menu</h1>
+<div class="page-header">
+    <h1>🍽️ Our Delicious Menu</h1>
+    <p style="font-size: 1.2rem; margin-top: 1rem; opacity: 0.95;">Freshly prepared with love, delivered to your door</p>
+</div>
 
 {% if session.user_id %}
 <div class="cart-badge" id="cartBadge" onclick="toggleCart()">
@@ -53,33 +237,57 @@
 
 {% if categories %}
     {% for category, items in categories.items() %}
-        <div style="background: white; padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
-            <h2 style="color: #e74c3c; margin-bottom: 1.5rem; border-bottom: 2px solid #e74c3c; padding-bottom: 0.5rem;">
+        <div class="category-section">
+            <h2 class="category-title">
+                {% if category == 'Pizza' %}🍕
+                {% elif category == 'Salads' %}🥗
+                {% elif category == 'Appetizers' %}🍤
+                {% elif category == 'Desserts' %}🍰
+                {% elif category == 'Beverages' %}🥤
+                {% else %}🍽️{% endif %}
                 {{ category }}
             </h2>
             
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem;">
                 {% for item in items %}
-                    <div style="border: 1px solid #ddd; padding: 1.5rem; border-radius: 8px;">
-                        <h3 style="color: #2c3e50; margin-bottom: 0.5rem;">{{ item.name }}</h3>
-                        <p style="color: #7f8c8d; margin-bottom: 1rem; min-height: 60px;">{{ item.description }}</p>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="font-size: 1.3rem; font-weight: bold; color: #27ae60;">${{ "%.2f"|format(item.price) }}</span>
-                            {% if item.available %}
-                                {% if session.user_id %}
-                                    <button class="btn add-to-cart" 
-                                            data-id="{{ item.id }}"
-                                            data-name="{{ item.name }}"
-                                            data-price="{{ item.price }}"
-                                            style="padding: 8px 15px;">
-                                        Add to Cart
-                                    </button>
+                    <div class="menu-item-card">
+                        {% if item.image_url %}
+                            <img src="{{ item.image_url }}" alt="{{ item.name }}" class="menu-item-image">
+                        {% else %}
+                            <div class="menu-item-image" style="display: flex; align-items: center; justify-content: center; font-size: 4rem;">
+                                {% if category == 'Pizza' %}🍕
+                                {% elif category == 'Salads' %}🥗
+                                {% elif category == 'Appetizers' %}🍤
+                                {% elif category == 'Desserts' %}🍰
+                                {% elif category == 'Beverages' %}🥤
+                                {% else %}🍽️{% endif %}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="menu-item-content">
+                            <span class="category-badge">{{ item.category }}</span>
+                            <h3 class="menu-item-title">{{ item.name }}</h3>
+                            <p class="menu-item-description">{{ item.description }}</p>
+                            
+                            <div class="menu-item-footer">
+                                <span class="price-tag">${{ "%.2f"|format(item.price) }}</span>
+                                {% if item.available %}
+                                    {% if session.user_id %}
+                                        <button class="add-to-cart-btn add-to-cart" 
+                                                data-id="{{ item.id }}"
+                                                data-name="{{ item.name }}"
+                                                data-price="{{ item.price }}">
+                                            Add to Cart
+                                        </button>
+                                    {% else %}
+                                        <a href="{{ url_for('auth.login') }}" class="add-to-cart-btn" style="text-decoration: none;">
+                                            Login to Order
+                                        </a>
+                                    {% endif %}
                                 {% else %}
-                                    <a href="{{ url_for('auth.login') }}" class="btn" style="padding: 8px 15px; text-decoration: none;">Login to Order</a>
+                                    <span style="color: #e74c3c; font-weight: bold; font-size: 0.9rem;">❌ Unavailable</span>
                                 {% endif %}
-                            {% else %}
-                                <span style="color: #e74c3c; font-weight: bold;">Unavailable</span>
-                            {% endif %}
+                            </div>
                         </div>
                     </div>
                 {% endfor %}
@@ -87,8 +295,9 @@
         </div>
     {% endfor %}
 {% else %}
-    <div style="background: white; padding: 3rem; border-radius: 10px; text-align: center;">
-        <p style="color: #7f8c8d; font-size: 1.2rem;">No menu items available at the moment.</p>
+    <div class="empty-cart-message">
+        <h2>😔 No menu items available</h2>
+        <p>Please check back soon!</p>
     </div>
 {% endif %}
 
@@ -96,14 +305,16 @@
 {% if session.user_id %}
 <div class="cart-modal" id="cartModal" onclick="closeCartIfClickedOutside(event)">
     <div class="cart-content" onclick="event.stopPropagation()">
-        <h2 style="color: #2c3e50; margin-bottom: 1.5rem;">Your Cart</h2>
+        <h2 style="color: #2c3e50; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            🛒 Your Cart
+        </h2>
         
         <div id="cartItems" style="margin-bottom: 2rem;">
-            <p style="color: #7f8c8d; text-align: center;">Your cart is empty</p>
+            <p class="empty-cart-message">Your cart is empty</p>
         </div>
         
-        <div style="border-top: 2px solid #ddd; padding-top: 1rem; margin-bottom: 1rem;">
-            <p style="font-size: 1.3rem; font-weight: bold; color: #27ae60; text-align: right;">
+        <div style="border-top: 3px solid #e74c3c; padding-top: 1rem; margin-bottom: 1rem;">
+            <p style="font-size: 1.5rem; font-weight: bold; color: #27ae60; text-align: right;">
                 Total: $<span id="modalCartTotal">0.00</span>
             </p>
         </div>
@@ -138,7 +349,7 @@ function addToCart(id, name, price) {
     }
     
     updateCartDisplay();
-    showNotification('Added to cart: ' + name);
+    showNotification('✅ Added to cart: ' + name);
 }
 
 function removeFromCart(id) {
@@ -170,24 +381,24 @@ function updateCartDisplay() {
     const checkoutBtn = document.getElementById('checkoutBtn');
     
     if (cart.length === 0) {
-        cartItemsDiv.innerHTML = '<p style="color: #7f8c8d; text-align: center;">Your cart is empty</p>';
+        cartItemsDiv.innerHTML = '<p class="empty-cart-message">Your cart is empty</p>';
         checkoutBtn.disabled = true;
     } else {
         cartItemsDiv.innerHTML = cart.map(item => `
-            <div style="border: 1px solid #ddd; padding: 1rem; border-radius: 5px; margin-bottom: 0.5rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="cart-item">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                     <div style="flex: 1;">
-                        <h4 style="color: #2c3e50; margin-bottom: 0.3rem;">${item.name}</h4>
-                        <p style="color: #27ae60; font-weight: bold;">$${item.price.toFixed(2)} each</p>
+                        <h4 style="color: #2c3e50; margin: 0 0 0.3rem 0; font-size: 1.1rem;">${item.name}</h4>
+                        <p style="color: #27ae60; font-weight: bold; margin: 0;">$${item.price.toFixed(2)} each</p>
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <button onclick="updateQuantity('${item.id}', -1)" style="background: #95a5a6; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">-</button>
-                        <span style="font-weight: bold; min-width: 30px; text-align: center;">${item.quantity}</span>
-                        <button onclick="updateQuantity('${item.id}', 1)" style="background: #27ae60; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">+</button>
-                        <button onclick="removeFromCart('${item.id}')" style="background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-left: 0.5rem;">Remove</button>
+                        <button onclick="updateQuantity('${item.id}', -1)" style="background: #95a5a6; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold;">−</button>
+                        <span style="font-weight: bold; min-width: 40px; text-align: center; font-size: 1.1rem;">${item.quantity}</span>
+                        <button onclick="updateQuantity('${item.id}', 1)" style="background: #27ae60; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold;">+</button>
+                        <button onclick="removeFromCart('${item.id}')" style="background: #e74c3c; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; margin-left: 0.5rem;">🗑️</button>
                     </div>
                 </div>
-                <p style="color: #7f8c8d; font-size: 0.9rem; margin-top: 0.5rem;">Subtotal: $${(item.price * item.quantity).toFixed(2)}</p>
+                <p style="color: #555; font-size: 0.95rem; margin: 0; text-align: right; font-weight: 600;">Subtotal: $${(item.price * item.quantity).toFixed(2)}</p>
             </div>
         `).join('');
         checkoutBtn.disabled = false;
@@ -232,37 +443,29 @@ function checkout() {
             cart = [];
             updateCartDisplay();
             toggleCart();
-            alert('Order placed successfully!');
-            window.location.href = '{{ url_for("orders.order_list") }}';
+            showNotification('🎉 Order placed successfully!');
+            setTimeout(() => {
+                window.location.href = '{{ url_for("orders.order_list") }}';
+            }, 1500);
         } else {
             alert('Error: ' + data.error);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Failed to create order. Please check the console for details.');
+        alert('Failed to create order. Please try again.');
     });
 }
 
 function showNotification(message) {
     const notification = document.createElement('div');
+    notification.className = 'notification';
     notification.textContent = message;
-    notification.style.cssText = `
-        position: fixed;
-        top: 100px;
-        right: 20px;
-        background: #27ae60;
-        color: white;
-        padding: 15px 20px;
-        border-radius: 5px;
-        z-index: 3000;
-        animation: slideIn 0.3s ease-out;
-    `;
     document.body.appendChild(notification);
     
     setTimeout(() => {
         notification.remove();
-    }, 2000);
+    }, 3000);
 }
 
 // Add event listeners to all "Add to Cart" buttons
