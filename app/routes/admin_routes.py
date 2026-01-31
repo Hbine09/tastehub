@@ -8,9 +8,7 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 # Admin email list - only these emails can access admin features
 ADMIN_EMAILS = [
-    '',
-    # Add your email here for testing
-    'your-email@example.com'  # Replace with your actual email
+    'admin@cloudbite.com' # Replace with your actual email
 ]
 
 def admin_required(f):

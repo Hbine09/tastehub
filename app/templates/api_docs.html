@@ -2,176 +2,503 @@
 
 {% block title %}API Documentation - CloudBite{% endblock %}
 
+{% block extra_css %}
+<style>
+    .api-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+    
+    .endpoint-card {
+        border-left: 4px solid;
+        padding-left: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .endpoint-card.get { border-color: #27ae60; }
+    .endpoint-card.post { border-color: #3498db; }
+    .endpoint-card.delete { border-color: #e74c3c; }
+    
+    .method-badge {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 0.85rem;
+        margin-right: 1rem;
+    }
+    
+    .method-get { background: #27ae60; color: white; }
+    .method-post { background: #3498db; color: white; }
+    .method-delete { background: #e74c3c; color: white; }
+    
+    .code-block {
+        background: #2c3e50;
+        color: #ecf0f1;
+        padding: 1.5rem;
+        border-radius: 10px;
+        overflow-x: auto;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        margin: 1rem 0;
+    }
+    
+    .test-button {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        margin-top: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .test-button:hover {
+        background: #c0392b;
+        transform: translateY(-2px);
+    }
+    
+    .test-button:disabled {
+        background: #95a5a6;
+        cursor: not-allowed;
+    }
+    
+    .result-box {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 8px;
+        display: none;
+    }
+    
+    .result-success {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+    }
+    
+    .result-error {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+    }
+    
+    .cloud-services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .cloud-service-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<h1 style="color: #2c3e50; margin-bottom: 2rem;">CloudBite REST API Documentation</h1>
-
-<div style="background: white; padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
-    <h2 style="color: #e74c3c; margin-bottom: 1rem;">Overview</h2>
-    <p style="line-height: 1.8;">
-        CloudBite provides RESTful APIs for accessing menu items and orders. 
-        All API endpoints return JSON responses and require authentication where specified.
-    </p>
-</div>
-
-<div style="background: white; padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
-    <h2 style="color: #e74c3c; margin-bottom: 1rem;">Available Endpoints</h2>
-    
-    <!-- Menu API -->
-    <div style="border-left: 4px solid #27ae60; padding-left: 1rem; margin-bottom: 2rem;">
-        <h3 style="color: #2c3e50;">GET /menu/api/items</h3>
-        <p><strong>Description:</strong> Retrieve all menu items from Firestore</p>
-        <p><strong>Authentication:</strong> Not required</p>
-        <p><strong>Response:</strong></p>
-        <pre style="background: #f4f4f4; padding: 1rem; border-radius: 5px; overflow-x: auto;">
-{
-    "success": true,
-    "items": [
-        {
-            "id": "item_id",
-            "name": "Margherita Pizza",
-            "description": "Classic pizza...",
-            "price": 12.99,
-            "category": "Pizza",
-            "available": true
-        }
-    ],
-    "count": 12
-}</pre>
-        <button onclick="testMenuAPI()" class="btn" style="margin-top: 1rem;">Test This Endpoint</button>
-        <div id="menuAPIResult" style="margin-top: 1rem;"></div>
+<div style="max-width: 1200px; margin: 2rem auto;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 3rem; border-radius: 20px; text-align: center; margin-bottom: 3rem;">
+        <h1 style="font-size: 3rem; margin: 0 0 1rem 0;">📡 CloudBite REST API</h1>
+        <p style="font-size: 1.2rem; opacity: 0.95; margin: 0;">Complete API documentation for developers</p>
     </div>
-    
-    <!-- Orders API -->
-    <div style="border-left: 4px solid #3498db; padding-left: 1rem; margin-bottom: 2rem;">
-        <h3 style="color: #2c3e50;">GET /orders/api/orders</h3>
-        <p><strong>Description:</strong> Retrieve user's orders from Cloud SQL</p>
-        <p><strong>Authentication:</strong> Required (must be logged in)</p>
-        <p><strong>Response:</strong></p>
-        <pre style="background: #f4f4f4; padding: 1rem; border-radius: 5px; overflow-x: auto;">
-{
-    "success": true,
-    "orders": [
-        {
-            "id": 1,
-            "user_id": "user123",
-            "total": 34.97,
-            "status": "pending",
-            "items": [...]
-        }
-    ],
-    "count": 5
-}</pre>
-        {% if session.user_id %}
-        <button onclick="testOrdersAPI()" class="btn" style="margin-top: 1rem;">Test This Endpoint</button>
-        {% else %}
-        <p style="color: #e74c3c; margin-top: 1rem;">Please login to test this endpoint</p>
-        {% endif %}
-        <div id="ordersAPIResult" style="margin-top: 1rem;"></div>
-    </div>
-    
-    <!-- Create Order API -->
-    <div style="border-left: 4px solid #e74c3c; padding-left: 1rem; margin-bottom: 2rem;">
-        <h3 style="color: #2c3e50;">POST /orders/create</h3>
-        <p><strong>Description:</strong> Create a new order</p>
-        <p><strong>Authentication:</strong> Required (must be logged in)</p>
-        <p><strong>Request Body:</strong></p>
-        <pre style="background: #f4f4f4; padding: 1rem; border-radius: 5px; overflow-x: auto;">
-{
-    "items": [
-        {
-            "name": "Margherita Pizza",
-            "price": 12.99,
-            "quantity": 2
-        }
-    ]
-}</pre>
-        <p><strong>Response:</strong></p>
-        <pre style="background: #f4f4f4; padding: 1rem; border-radius: 5px; overflow-x: auto;">
-{
-    "success": true,
-    "order_id": 1,
-    "message": "Order created successfully"
-}</pre>
-    </div>
-</div>
 
-<div style="background: white; padding: 2rem; border-radius: 10px;">
-    <h2 style="color: #e74c3c; margin-bottom: 1rem;">Database Architecture</h2>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-        <div>
-            <h3 style="color: #27ae60; margin-bottom: 1rem;">🔥 Firestore (NoSQL)</h3>
-            <ul style="line-height: 2;">
-                <li>Menu Items</li>
-                <li>User Profiles</li>
-                <li>Order Logs</li>
-                <li>Reviews (future)</li>
-            </ul>
-            <p style="margin-top: 1rem; color: #7f8c8d;">
-                <strong>Why Firestore?</strong> Flexible schema for menu items, easy to update, real-time capabilities
-            </p>
-        </div>
-        <div>
-            <h3 style="color: #3498db; margin-bottom: 1rem;">🗄️ Cloud SQL (PostgreSQL)</h3>
-            <ul style="line-height: 2;">
-                <li>Orders (transactional)</li>
-                <li>Order Items (relational)</li>
-                <li>Payment Records (future)</li>
-                <li>Analytics Data (future)</li>
-            </ul>
-            <p style="margin-top: 1rem; color: #7f8c8d;">
-                <strong>Why Cloud SQL?</strong> ACID compliance for orders, complex joins, transactional integrity
-            </p>
+    <!-- Overview -->
+    <div class="api-section">
+        <h2 style="color: #2c3e50; margin-bottom: 1rem;">🌐 Overview</h2>
+        <p style="line-height: 1.8; color: #555;">
+            CloudBite provides a comprehensive RESTful API for accessing menu items, managing orders, and integrating with our cloud infrastructure. 
+            All API endpoints return JSON responses and use standard HTTP methods and response codes.
+        </p>
+        <div style="margin-top: 1.5rem; padding: 1rem; background: #f8f9fa; border-left: 4px solid #3498db; border-radius: 5px;">
+            <strong>Base URL:</strong> <code>{{ request.url_root }}</code><br>
+            <strong>Authentication:</strong> Session-based for protected endpoints<br>
+            <strong>Response Format:</strong> JSON
         </div>
     </div>
-</div>
 
+    <!-- Menu API Endpoints -->
+    <div class="api-section">
+        <h2 style="color: #2c3e50; margin-bottom: 1.5rem;">🍽️ Menu API</h2>
+        
+        <div class="endpoint-card get">
+            <h3 style="color: #2c3e50;">
+                <span class="method-badge method-get">GET</span>
+                /menu/api/items
+            </h3>
+            <p><strong>Description:</strong> Retrieve all menu items from Cloud Firestore (NoSQL)</p>
+            <p><strong>Authentication:</strong> Not required</p>
+            <p><strong>Cloud Service:</strong> Google Cloud Firestore</p>
+            
+            <p><strong>Response Example:</strong></p>
+            <div class="code-block">
+{
+  "success": true,
+  "items": [
+    {
+      "id": "abc123",
+      "name": "Margherita Pizza",
+      "description": "Classic pizza with fresh mozzarella",
+      "price": 12.99,
+      "category": "Pizza",
+      "image_url": "https://storage.googleapis.com/...",
+      "available": true
+    }
+  ],
+  "count": 12
+}
+            </div>
+            
+            <button onclick="testMenuAPI()" class="test-button">🧪 Test This Endpoint</button>
+            <div id="menuAPIResult" class="result-box"></div>
+        </div>
+    </div>
+
+    <!-- Orders API Endpoints -->
+    <div class="api-section">
+        <h2 style="color: #2c3e50; margin-bottom: 1.5rem;">📦 Orders API</h2>
+        
+        <div class="endpoint-card get">
+            <h3 style="color: #2c3e50;">
+                <span class="method-badge method-get">GET</span>
+                /orders/api/orders
+            </h3>
+            <p><strong>Description:</strong> Retrieve authenticated user's orders from Cloud SQL (PostgreSQL)</p>
+            <p><strong>Authentication:</strong> Required (session-based)</p>
+            <p><strong>Cloud Service:</strong> Google Cloud SQL (PostgreSQL)</p>
+            
+            <p><strong>Response Example:</strong></p>
+            <div class="code-block">
+{
+  "success": true,
+  "orders": [
+    {
+      "id": 1,
+      "user_id": "user123",
+      "user_name": "John Doe",
+      "user_email": "john@example.com",
+      "total": 34.97,
+      "status": "pending",
+      "created_at": "2024-01-31T12:00:00",
+      "items": [
+        {
+          "id": 1,
+          "item_name": "Margherita Pizza",
+          "item_price": 12.99,
+          "quantity": 2
+        }
+      ]
+    }
+  ],
+  "count": 5
+}
+            </div>
+            
+            {% if session.user_id %}
+            <button onclick="testOrdersAPI()" class="test-button">🧪 Test This Endpoint</button>
+            {% else %}
+            <button class="test-button" disabled>🔒 Login Required to Test</button>
+            {% endif %}
+            <div id="ordersAPIResult" class="result-box"></div>
+        </div>
+        
+        <div class="endpoint-card post">
+            <h3 style="color: #2c3e50;">
+                <span class="method-badge method-post">POST</span>
+                /orders/create
+            </h3>
+            <p><strong>Description:</strong> Create a new order. Saves to both Cloud SQL and Firestore</p>
+            <p><strong>Authentication:</strong> Required (session-based)</p>
+            <p><strong>Cloud Services:</strong> Cloud SQL (transactional data) + Firestore (order logs)</p>
+            
+            <p><strong>Request Body:</strong></p>
+            <div class="code-block">
+{
+  "items": [
+    {
+      "name": "Margherita Pizza",
+      "price": 12.99,
+      "quantity": 2
+    },
+    {
+      "name": "Caesar Salad",
+      "price": 8.99,
+      "quantity": 1
+    }
+  ]
+}
+            </div>
+            
+            <p><strong>Response Example:</strong></p>
+            <div class="code-block">
+{
+  "success": true,
+  "order_id": 42,
+  "message": "Order created successfully"
+}
+            </div>
+        </div>
+    </div>
+
+    <!-- Cloud Functions -->
+    <div class="api-section">
+        <h2 style="color: #2c3e50; margin-bottom: 1.5rem;">⚡ Cloud Functions</h2>
+        
+        <div class="endpoint-card post">
+            <h3 style="color: #2c3e50;">
+                <span class="method-badge method-post">POST</span>
+                Cloud Function: order-notification
+            </h3>
+            <p><strong>Description:</strong> Serverless function for sending order notifications</p>
+            <p><strong>Trigger:</strong> HTTP POST from order creation</p>
+            <p><strong>Cloud Service:</strong> Google Cloud Functions (Gen 2)</p>
+            
+            <p><strong>Request Body:</strong></p>
+            <div class="code-block">
+{
+  "order_id": 42,
+  "user_email": "customer@example.com",
+  "user_name": "John Doe",
+  "total": 34.97,
+  "items_count": 3
+}
+            </div>
+            
+            <p><strong>Functionality:</strong></p>
+            <ul style="line-height: 2;">
+                <li>Receives order details via HTTP POST</li>
+                <li>Logs notification to Firestore</li>
+                <li>Returns confirmation with notification ID</li>
+                <li>Runs serverless (auto-scales from 0 to N)</li>
+            </ul>
+        </div>
+        
+        <div class="endpoint-card get">
+            <h3 style="color: #2c3e50;">
+                <span class="method-badge method-get">GET</span>
+                Cloud Function: order-stats
+            </h3>
+            <p><strong>Description:</strong> Get analytics and statistics from Firestore</p>
+            <p><strong>Trigger:</strong> HTTP GET</p>
+            <p><strong>Cloud Service:</strong> Google Cloud Functions (Gen 2)</p>
+            
+            <p><strong>Response Example:</strong></p>
+            <div class="code-block">
+{
+  "success": true,
+  "total_orders": 145,
+  "total_notifications": 145,
+  "total_menu_items": 12,
+  "timestamp": "2024-01-31T12:00:00"
+}
+            </div>
+        </div>
+    </div>
+
+    <!-- Cloud Storage -->
+    <div class="api-section">
+        <h2 style="color: #2c3e50; margin-bottom: 1.5rem;">☁️ Cloud Storage Integration</h2>
+        
+        <div class="endpoint-card post">
+            <h3 style="color: #2c3e50;">
+                <span class="method-badge method-post">POST</span>
+                /admin/upload-menu-image
+            </h3>
+            <p><strong>Description:</strong> Upload menu item images to Google Cloud Storage</p>
+            <p><strong>Authentication:</strong> Admin only</p>
+            <p><strong>Cloud Service:</strong> Google Cloud Storage</p>
+            
+            <p><strong>Form Data:</strong></p>
+            <div class="code-block">
+menu_item_id: "abc123"
+image: [binary file data]
+            </div>
+            
+            <p><strong>Functionality:</strong></p>
+            <ul style="line-height: 2;">
+                <li>Accepts image files (PNG, JPG, WEBP, GIF)</li>
+                <li>Validates file size (max 5MB)</li>
+                <li>Uploads to Cloud Storage bucket: <code>cloudbite-menu-images</code></li>
+                <li>Generates unique filename with UUID</li>
+                <li>Makes image publicly accessible</li>
+                <li>Updates Firestore menu item with image URL</li>
+            </ul>
+            
+            <p><strong>Image URL Format:</strong></p>
+            <div class="code-block">
+https://storage.googleapis.com/cloudbite-menu-images/menu/{uuid}_{filename}
+            </div>
+        </div>
+    </div>
+
+    <!-- Cloud Services Used -->
+    <div class="api-section">
+        <h2 style="color: #2c3e50; margin-bottom: 1.5rem;">🔧 Google Cloud Services Used</h2>
+        
+        <div class="cloud-services-grid">
+            <div class="cloud-service-card">
+                <h3 style="font-size: 2rem; margin: 0 0 0.5rem 0;">🔥</h3>
+                <h4 style="margin: 0 0 0.5rem 0;">Cloud Firestore</h4>
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">NoSQL database for menu items and logs</p>
+            </div>
+            
+            <div class="cloud-service-card">
+                <h3 style="font-size: 2rem; margin: 0 0 0.5rem 0;">🗄️</h3>
+                <h4 style="margin: 0 0 0.5rem 0;">Cloud SQL</h4>
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">PostgreSQL for transactional orders</p>
+            </div>
+            
+            <div class="cloud-service-card">
+                <h3 style="font-size: 2rem; margin: 0 0 0.5rem 0;">⚡</h3>
+                <h4 style="margin: 0 0 0.5rem 0;">Cloud Functions</h4>
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">Serverless order notifications</p>
+            </div>
+            
+            <div class="cloud-service-card">
+                <h3 style="font-size: 2rem; margin: 0 0 0.5rem 0;">☁️</h3>
+                <h4 style="margin: 0 0 0.5rem 0;">Cloud Storage</h4>
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">Image storage and delivery</p>
+            </div>
+            
+            <div class="cloud-service-card">
+                <h3 style="font-size: 2rem; margin: 0 0 0.5rem 0;">🔐</h3>
+                <h4 style="margin: 0 0 0.5rem 0;">Firebase Auth</h4>
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">User authentication system</p>
+            </div>
+            
+            <div class="cloud-service-card">
+                <h3 style="font-size: 2rem; margin: 0 0 0.5rem 0;">🗺️</h3>
+                <h4 style="margin: 0 0 0.5rem 0;">Maps API</h4>
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">Location services integration</p>
+            </div>
+            
+            <div class="cloud-service-card">
+                <h3 style="font-size: 2rem; margin: 0 0 0.5rem 0;">🚀</h3>
+                <h4 style="margin: 0 0 0.5rem 0;">App Engine</h4>
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">Platform-as-a-Service hosting</p>
+            </div>
+            
+            <div class="cloud-service-card">
+                <h3 style="font-size: 2rem; margin: 0 0 0.5rem 0;">🔑</h3>
+                <h4 style="margin: 0 0 0.5rem 0;">Secret Manager</h4>
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">Secure credential storage</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Database Architecture -->
+    <div class="api-section">
+        <h2 style="color: #2c3e50; margin-bottom: 1.5rem;">🏗️ Multi-Database Architecture</h2>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div style="background: #f8f9fa; padding: 2rem; border-radius: 10px;">
+                <h3 style="color: #27ae60; margin-bottom: 1rem;">🔥 Firestore (NoSQL)</h3>
+                <p style="font-weight: 600; margin-bottom: 0.5rem;">Collections:</p>
+                <ul style="line-height: 2;">
+                    <li><code>menu_items</code> - Menu data with flexible schema</li>
+                    <li><code>users</code> - User profiles and auth</li>
+                    <li><code>order_logs</code> - Order tracking/analytics</li>
+                    <li><code>notifications</code> - System notifications</li>
+                </ul>
+                <p style="margin-top: 1rem; color: #555;">
+                    <strong>Why Firestore?</strong><br>
+                    Flexible schema, real-time sync, serverless, easy to update menu items
+                </p>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 2rem; border-radius: 10px;">
+                <h3 style="color: #3498db; margin-bottom: 1rem;">🗄️ Cloud SQL (PostgreSQL)</h3>
+                <p style="font-weight: 600; margin-bottom: 0.5rem;">Tables:</p>
+                <ul style="line-height: 2;">
+                    <li><code>orders</code> - Order headers with ACID compliance</li>
+                    <li><code>order_items</code> - Line items with foreign keys</li>
+                </ul>
+                <p style="margin-top: 1rem; color: #555;">
+                    <strong>Why Cloud SQL?</strong><br>
+                    ACID transactions, complex JOINs, referential integrity, financial data compliance
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Features -->
+    <div class="api-section">
+        <h2 style="color: #2c3e50; margin-bottom: 1.5rem;">🔐 Security Implementation</h2>
+        
+        <div style="display: grid; gap: 1rem;">
+            <div style="background: #d4edda; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #27ae60;">
+                <h4 style="margin: 0 0 0.5rem 0; color: #155724;">1. Password Hashing (bcrypt)</h4>
+                <p style="margin: 0; color: #155724;">All passwords hashed with bcrypt using salt rounds for maximum security</p>
+            </div>
+            
+            <div style="background: #d1ecf1; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #17a2b8;">
+                <h4 style="margin: 0 0 0.5rem 0; color: #0c5460;">2. SQL Injection Prevention</h4>
+                <p style="margin: 0; color: #0c5460;">SQLAlchemy ORM with parameterized queries prevents SQL injection attacks</p>
+            </div>
+            
+            <div style="background: #fff3cd; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ffc107;">
+                <h4 style="margin: 0 0 0.5rem 0; color: #856404;">3. Session-Based Authentication</h4>
+                <p style="margin: 0; color: #856404;">Secure Flask sessions with secret key encryption</p>
+            </div>
+            
+            <div style="background: #f8d7da; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #dc3545;">
+                <h4 style="margin: 0 0 0.5rem 0; color: #721c24;">4. Role-Based Access Control</h4>
+                <p style="margin: 0; color: #721c24;">Admin decorators restrict sensitive operations to authorized users only</p>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
 function testMenuAPI() {
     const resultDiv = document.getElementById('menuAPIResult');
-    resultDiv.innerHTML = '<p style="color: #7f8c8d;">Loading...</p>';
+    resultDiv.style.display = 'block';
+    resultDiv.className = 'result-box';
+    resultDiv.innerHTML = '<p style="margin:0;">🔄 Testing endpoint...</p>';
     
     fetch('/menu/api/items')
         .then(response => response.json())
         .then(data => {
+            resultDiv.className = 'result-box result-success';
             resultDiv.innerHTML = `
-                <div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 1rem; border-radius: 5px;">
-                    <strong>✅ Success!</strong>
-                    <pre style="margin-top: 0.5rem; overflow-x: auto;">${JSON.stringify(data, null, 2)}</pre>
-                </div>
+                <strong>✅ Success!</strong>
+                <pre style="margin-top: 0.5rem; overflow-x: auto; background: #fff; padding: 1rem; border-radius: 5px;">${JSON.stringify(data, null, 2)}</pre>
             `;
         })
         .catch(error => {
-            resultDiv.innerHTML = `
-                <div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 1rem; border-radius: 5px;">
-                    <strong>❌ Error:</strong> ${error.message}
-                </div>
-            `;
+            resultDiv.className = 'result-box result-error';
+            resultDiv.innerHTML = `<strong>❌ Error:</strong> ${error.message}`;
         });
 }
 
 function testOrdersAPI() {
     const resultDiv = document.getElementById('ordersAPIResult');
-    resultDiv.innerHTML = '<p style="color: #7f8c8d;">Loading...</p>';
+    resultDiv.style.display = 'block';
+    resultDiv.className = 'result-box';
+    resultDiv.innerHTML = '<p style="margin:0;">🔄 Testing endpoint...</p>';
     
     fetch('/orders/api/orders')
         .then(response => response.json())
         .then(data => {
+            resultDiv.className = 'result-box result-success';
             resultDiv.innerHTML = `
-                <div style="background: #d4edda; border: 1px solid #c3e6cb; padding: 1rem; border-radius: 5px;">
-                    <strong>✅ Success!</strong>
-                    <pre style="margin-top: 0.5rem; overflow-x: auto;">${JSON.stringify(data, null, 2)}</pre>
-                </div>
+                <strong>✅ Success!</strong>
+                <pre style="margin-top: 0.5rem; overflow-x: auto; background: #fff; padding: 1rem; border-radius: 5px;">${JSON.stringify(data, null, 2)}</pre>
             `;
         })
         .catch(error => {
-            resultDiv.innerHTML = `
-                <div style="background: #f8d7da; border: 1px solid #f5c6cb; padding: 1rem; border-radius: 5px;">
-                    <strong>❌ Error:</strong> ${error.message}
-                </div>
-            `;
+            resultDiv.className = 'result-box result-error';
+            resultDiv.innerHTML = `<strong>❌ Error:</strong> ${error.message}`;
         });
 }
 </script>
