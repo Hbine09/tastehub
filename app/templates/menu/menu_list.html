@@ -4,6 +4,77 @@
 
 {% block extra_css %}
 <style>
+    /* Search and Filter Bar */
+    .search-filter-bar {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 70px;
+        z-index: 100;
+    }
+    
+    .search-box {
+        position: relative;
+        max-width: 600px;
+        margin: 0 auto 1rem auto;
+    }
+    
+    .search-box input {
+        width: 100%;
+        padding: 15px 50px 15px 20px;
+        border: 2px solid #ddd;
+        border-radius: 50px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .search-box input:focus {
+        outline: none;
+        border-color: #e74c3c;
+        box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+    }
+    
+    .search-icon {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+        color: #7f8c8d;
+    }
+    
+    .filter-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+        padding: 10px 20px;
+        border: 2px solid #e74c3c;
+        background: white;
+        color: #e74c3c;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-btn:hover {
+        background: #e74c3c;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .filter-btn.active {
+        background: #e74c3c;
+        color: white;
+    }
+    
     .cart-badge {
         position: fixed;
         top: 80px;
@@ -20,8 +91,18 @@
     }
     
     .cart-badge:hover {
-        transform: translateY(-3px);
+        transform: translateY(-3px) scale(1.05);
         box-shadow: 0 12px 25px rgba(231, 76, 60, 0.5);
+    }
+    
+    .cart-badge.shake {
+        animation: shake 0.5s;
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-10px); }
+        75% { transform: translateX(10px); }
     }
     
     .cart-modal {
@@ -47,6 +128,18 @@
         max-height: 80vh;
         overflow-y: auto;
         box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        animation: slideDown 0.3s ease-out;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
     
     .menu-item-card {
@@ -58,6 +151,12 @@
         height: 100%;
         display: flex;
         flex-direction: column;
+        opacity: 1;
+        transform: scale(1);
+    }
+    
+    .menu-item-card.hidden {
+        display: none;
     }
     
     .menu-item-card:hover {
@@ -139,6 +238,10 @@
         box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
     }
     
+    .add-to-cart-btn:active {
+        transform: scale(0.95);
+    }
+    
     .category-section {
         background: white;
         padding: 2.5rem;
@@ -186,11 +289,11 @@
         border-radius: 10px;
         z-index: 3000;
         box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
-        animation: slideIn 0.3s ease-out;
+        animation: slideInRight 0.3s ease-out;
         font-weight: 600;
     }
     
-    @keyframes slideIn {
+    @keyframes slideInRight {
         from {
             transform: translateX(400px);
             opacity: 0;
@@ -201,10 +304,15 @@
         }
     }
     
-    .empty-cart-message {
+    .empty-state {
         text-align: center;
-        padding: 3rem;
+        padding: 4rem 2rem;
         color: #7f8c8d;
+    }
+    
+    .empty-state h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
     }
     
     .cart-item {
@@ -220,6 +328,23 @@
         border-color: #3498db;
         background: white;
     }
+    
+    .no-results {
+        text-align: center;
+        padding: 3rem;
+        background: white;
+        border-radius: 15px;
+        margin: 2rem 0;
+    }
+    
+    .pulse {
+        animation: pulse 0.5s;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
 </style>
 {% endblock %}
 
@@ -229,15 +354,45 @@
     <p style="font-size: 1.2rem; margin-top: 1rem; opacity: 0.95;">Freshly prepared with love, delivered to your door</p>
 </div>
 
+<!-- Search and Filter Bar -->
+<div class="search-filter-bar">
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 Search for dishes..." onkeyup="filterMenu()">
+        <span class="search-icon">🔍</span>
+    </div>
+    
+    <div class="filter-buttons">
+        <button class="filter-btn active" data-category="all" onclick="filterByCategory('all', this)">
+            All Items
+        </button>
+        <button class="filter-btn" data-category="Pizza" onclick="filterByCategory('Pizza', this)">
+            🍕 Pizza
+        </button>
+        <button class="filter-btn" data-category="Salads" onclick="filterByCategory('Salads', this)">
+            🥗 Salads
+        </button>
+        <button class="filter-btn" data-category="Appetizers" onclick="filterByCategory('Appetizers', this)">
+            🍤 Appetizers
+        </button>
+        <button class="filter-btn" data-category="Desserts" onclick="filterByCategory('Desserts', this)">
+            🍰 Desserts
+        </button>
+        <button class="filter-btn" data-category="Beverages" onclick="filterByCategory('Beverages', this)">
+            🥤 Beverages
+        </button>
+    </div>
+</div>
+
 {% if session.user_id %}
 <div class="cart-badge" id="cartBadge" onclick="toggleCart()">
     🛒 Cart (<span id="cartCount">0</span>) - $<span id="cartTotal">0.00</span>
 </div>
 {% endif %}
 
+<div id="menuContainer">
 {% if categories %}
     {% for category, items in categories.items() %}
-        <div class="category-section">
+        <div class="category-section" data-category="{{ category }}">
             <h2 class="category-title">
                 {% if category == 'Pizza' %}🍕
                 {% elif category == 'Salads' %}🥗
@@ -250,7 +405,7 @@
             
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem;">
                 {% for item in items %}
-                    <div class="menu-item-card">
+                    <div class="menu-item-card" data-category="{{ category }}" data-name="{{ item.name|lower }}" data-description="{{ item.description|lower }}">
                         {% if item.image_url %}
                             <img src="{{ item.image_url }}" alt="{{ item.name }}" class="menu-item-image">
                         {% else %}
@@ -280,7 +435,7 @@
                                             Add to Cart
                                         </button>
                                     {% else %}
-                                        <a href="{{ url_for('auth.login') }}" class="add-to-cart-btn" style="text-decoration: none;">
+                                        <a href="{{ url_for('auth.login') }}" class="add-to-cart-btn" style="text-decoration: none; display: inline-block;">
                                             Login to Order
                                         </a>
                                     {% endif %}
@@ -295,11 +450,17 @@
         </div>
     {% endfor %}
 {% else %}
-    <div class="empty-cart-message">
+    <div class="empty-state">
         <h2>😔 No menu items available</h2>
         <p>Please check back soon!</p>
     </div>
 {% endif %}
+</div>
+
+<div id="noResults" class="no-results" style="display: none;">
+    <h2>🔍 No items found</h2>
+    <p>Try a different search term or category</p>
+</div>
 
 <!-- Cart Modal -->
 {% if session.user_id %}
@@ -310,7 +471,7 @@
         </h2>
         
         <div id="cartItems" style="margin-bottom: 2rem;">
-            <p class="empty-cart-message">Your cart is empty</p>
+            <p style="text-align: center; color: #7f8c8d;">Your cart is empty</p>
         </div>
         
         <div style="border-top: 3px solid #e74c3c; padding-top: 1rem; margin-bottom: 1rem;">
@@ -330,10 +491,64 @@
 {% endblock %}
 
 {% block extra_js %}
-{% if session.user_id %}
 <script>
 let cart = [];
+let currentFilter = 'all';
 
+// Menu Search and Filter
+function filterMenu() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const menuItems = document.querySelectorAll('.menu-item-card');
+    const categories = document.querySelectorAll('.category-section');
+    let visibleCount = 0;
+    
+    menuItems.forEach(item => {
+        const name = item.dataset.name;
+        const description = item.dataset.description;
+        const category = item.dataset.category;
+        
+        const matchesSearch = name.includes(searchTerm) || description.includes(searchTerm);
+        const matchesCategory = currentFilter === 'all' || category === currentFilter;
+        
+        if (matchesSearch && matchesCategory) {
+            item.classList.remove('hidden');
+            item.style.animation = 'fadeIn 0.3s';
+            visibleCount++;
+        } else {
+            item.classList.add('hidden');
+        }
+    });
+    
+    // Hide empty categories
+    categories.forEach(cat => {
+        const categoryName = cat.dataset.category;
+        const visibleItems = cat.querySelectorAll('.menu-item-card:not(.hidden)');
+        
+        if (currentFilter === 'all' || currentFilter === categoryName) {
+            cat.style.display = visibleItems.length > 0 ? 'block' : 'none';
+        } else {
+            cat.style.display = 'none';
+        }
+    });
+    
+    // Show/hide no results message
+    document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
+    document.getElementById('menuContainer').style.display = visibleCount === 0 ? 'none' : 'block';
+}
+
+function filterByCategory(category, button) {
+    currentFilter = category;
+    
+    // Update active button
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+    
+    // Filter items
+    filterMenu();
+}
+
+{% if session.user_id %}
+// Shopping Cart Functions (only for logged-in users)
 function addToCart(id, name, price) {
     const existingItem = cart.find(item => item.id === id);
     
@@ -350,6 +565,12 @@ function addToCart(id, name, price) {
     
     updateCartDisplay();
     showNotification('✅ Added to cart: ' + name);
+    
+    // Animate cart badge
+    document.getElementById('cartBadge').classList.add('shake');
+    setTimeout(() => {
+        document.getElementById('cartBadge').classList.remove('shake');
+    }, 500);
 }
 
 function removeFromCart(id) {
@@ -381,7 +602,7 @@ function updateCartDisplay() {
     const checkoutBtn = document.getElementById('checkoutBtn');
     
     if (cart.length === 0) {
-        cartItemsDiv.innerHTML = '<p class="empty-cart-message">Your cart is empty</p>';
+        cartItemsDiv.innerHTML = '<p style="text-align: center; color: #7f8c8d;">Your cart is empty</p>';
         checkoutBtn.disabled = true;
     } else {
         cartItemsDiv.innerHTML = cart.map(item => `
@@ -422,6 +643,10 @@ function checkout() {
         return;
     }
     
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    checkoutBtn.disabled = true;
+    checkoutBtn.textContent = 'Processing...';
+    
     const orderData = {
         items: cart.map(item => ({
             name: item.name,
@@ -440,21 +665,52 @@ function checkout() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            // Show success animation
+            showSuccessModal();
             cart = [];
             updateCartDisplay();
-            toggleCart();
-            showNotification('🎉 Order placed successfully!');
+            
             setTimeout(() => {
+                toggleCart();
                 window.location.href = '{{ url_for("orders.order_list") }}';
-            }, 1500);
+            }, 2000);
         } else {
             alert('Error: ' + data.error);
+            checkoutBtn.disabled = false;
+            checkoutBtn.textContent = 'Checkout';
         }
     })
     .catch(error => {
         console.error('Error:', error);
         alert('Failed to create order. Please try again.');
+        checkoutBtn.disabled = false;
+        checkoutBtn.textContent = 'Checkout';
     });
+}
+
+function showSuccessModal() {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 3rem;
+        border-radius: 20px;
+        text-align: center;
+        z-index: 3000;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        animation: bounceIn 0.5s;
+    `;
+    modal.innerHTML = `
+        <div style="font-size: 4rem; margin-bottom: 1rem;">🎉</div>
+        <h2 style="color: #27ae60; margin-bottom: 0.5rem;">Order Placed Successfully!</h2>
+        <p style="color: #7f8c8d;">Redirecting to your orders...</p>
+    `;
+    document.body.appendChild(modal);
+    
+    setTimeout(() => modal.remove(), 2000);
 }
 
 function showNotification(message) {
@@ -468,10 +724,13 @@ function showNotification(message) {
     }, 3000);
 }
 
-// Add event listeners to all "Add to Cart" buttons
+// Add event listeners for cart buttons
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.add-to-cart').forEach(button => {
         button.addEventListener('click', function() {
+            this.classList.add('pulse');
+            setTimeout(() => this.classList.remove('pulse'), 500);
+            
             const id = this.dataset.id;
             const name = this.dataset.name;
             const price = this.dataset.price;
@@ -479,6 +738,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-</script>
 {% endif %}
+
+// Add CSS animations (outside the if block - available to everyone)
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounceIn {
+        0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+        60% { transform: translate(-50%, -50%) scale(1.1); }
+        100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+`;
+document.head.appendChild(style);
+</script>
 {% endblock %}
