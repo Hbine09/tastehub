@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import firebase_admin
 from firebase_admin import credentials, firestore
 from google.cloud import secretmanager
+from app.routes import main_routes, auth_routes, order_routes, menu_routes, admin_routes
 
 # Load environment variables
 load_dotenv()
@@ -27,3 +28,4 @@ app.register_blueprint(main_routes.bp)
 app.register_blueprint(auth_routes.bp)
 app.register_blueprint(order_routes.bp)
 app.register_blueprint(menu_routes.bp)
+app.register_blueprint(admin_routes.bp)
