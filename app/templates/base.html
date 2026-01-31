@@ -168,7 +168,12 @@ nav a:hover {
     <li><a href="{{ url_for('main.api_docs') }}">API Docs</a></li>
     {% if session.user_id %}
         <li><a href="{{ url_for('orders.order_list') }}">My Orders</a></li>
-        <li><a href="{{ url_for('admin.upload_menu_image') }}">Upload Image</a></li>
+        
+        {# Only show admin link to admin users #}
+        {% if session.user_email in ['admin@cloudbite.com', 'your-email@example.com'] %}
+            <li><a href="{{ url_for('admin.upload_menu_image') }}" style="color: #f39c12;">🔐 Admin</a></li>
+        {% endif %}
+        
         <li><a href="{{ url_for('auth.logout') }}">Logout ({{ session.user_name }})</a></li>
     {% else %}
         <li><a href="{{ url_for('auth.login') }}">Login</a></li>
